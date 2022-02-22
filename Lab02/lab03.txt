@@ -1,0 +1,91 @@
+1.
+อ้างอิงข้อมูลจาก Website https://www.eventhelix.com/fault-handling/system-reliability-availability/
+จากลักษณะโครงสร้างระบบจะเห็นว่าการต่อ service ทั้งระบบเป็นแบบอนุกรม และจะใช้สูตรว่า
+A = Aw * Aa * Ad
+การคำนวณ Availiability จะใช้สูตรที่ว่า A = MTBF/(MTTR+MTBF)
+ทำการคำนวณแยกทีละส่วนจะได้ว่า
+Aw = 8751.23/(8751.23+8.77) = 8751.23/8760 = 0.998999
+Aa = 8716.08/(8716.08+43.92) = 8716.08/8760 = 0.994986
+Ad = 8672.40/(8672.40+87.60) = 8672.40/8760 = 0.99
+ดังนั้นจะได้ A = 0.998999 * 0.994986 * 0.99 = 0.9840501
+สรุป จากข้อมูลทั้งหมดจะพบว่าระบบนี้มีค่า Availability คือ 98.40501%
+
+2.
+ในแง่ของ interoperability
+Source of Stimulus: อุปกรณ์ bluetooth ที่ขอเริ่มการเชื่อมต่อ (Ex หูฟังไร้สาย)
+Stimulus: ทำการเชื่อมต่อ, ส่งข้อมูลระหว่างกัน
+Artifacts: อุปกรณ์ที่สามารถรับการเชื่อมต่อ bluetooth ได้ (Ex มือถือ)
+Environment: การค้นพบ device ปลายทางในเวลา runtime (เริ่มเชื่อมต่อ)/ค้นพบเจอก่อนแล้ว (ส่งข้อมูลระหว่างกัน)
+Response: เลือกประมวลผลข้อมูล/ไม่ประมวลผลข้อมูล, เริ่มการเชื่อมต่อกับ device
+Response Measure: สัดส่วนข้อมูลที่ส่งแล้วเลือกประมวลผล/ไม่ประมวลผลได้ถูกต้องต่อข้อมูลที่เลือกผิดพลาด, เวลาในการเชื่อมต่อกัน
+
+3.
+อ้างอิงข้อมูลจาก Website https://sematext.com/blog/website-performance-metrics/
+2. First Paint/First Contentful Paint คือเวลาในการ render pixel แรกและเวลาในการ render หน้าเว็บให้เห็น component แรก ควรมีเวลาต่ำ ๆ จะแสดงถึง performance ที่ดี
+1. Page Speed คือความเร็วในการ render หน้าเว็บให้ผู้ใช้เห็นทั้งหมด ควรมีความเร็วที่สูงจะแสดงถึง performance ที่ดี
+3. Error Rate คือสัดส่วน request ที่มีปัญหาต่อ request ทั้งหมด ควรเป็นอัตราส่วนที่น้อยจะแสดงถึง performance ที่ดี
+4. Time to Interactive คือเวลาตั้งแต่ First Contentful Paint ไปจนถึงเวลาที่ user สามารถ interact กับหน้าเว็บไซต์ได้
+5. Time to first byte คือเวลาที่ข้อมูล byte แรกส่งไปถึง client ควรมีเวลาน้อย ๆ
+6. Peak Response Time คือเวลาที่ใช้ในการตอบกลับนานที่สุดสำหรับ request ต่าง ๆ ควรมีเวลาน้อย ๆ
+7. Hardware Utilization คือความสามารถในการใช้ hardware ของ web server โดยจะเน้นวัดที่ CPU, RAM, และการใช้ Storage
+
+4.
+จาก Metric ที่เลือกคือ Hardware Utilization แนวทางการประเมินทรัพยากรที่ต้องใช้คือ
+	1. CPU Utilization ควรมีค่าต่ำ โดยวัดจากโหลดของ CPU ต่อเวลาที่ใช้วัด เช่นหากกล่าวว่า CPU utilization คือ 70% ต่อ 5 นาทีแสดงว่ามีการใช้งาน CPU เต็มกำลังอยู่ 3 นาที 30 วินาที ซึ่งการที่มี Utilization สูงจะแสดงว่า Web มี performance ต่ำ
+	2. Memory Utilization ควรมีค่าน้อย แต่สามารถใช้ RAM ให้เต็มที่แต่ไม่เกิน 100% เพราะจะนำไปสู่การอ่าน/เขียนข้อมูลลง storage โดยตรงซึ่งช้ากว่าและลดอายุการใช้งานของ storage
+CPU Utilization อ้างอิงข้อมูลจาก Website https://techdocs.broadcom.com/us/en/ca-enterprise-software/it-operations-management/performance-management/3-5/using/performance-metrics/cpu-utilization.html
+Memory Utilization อ้างอิงข้อมูลจาก Website https://www.quora.com/Is-high-memory-utilization-bad-for-computers-For-instance-running-a-server-at-95-and-above-memory-utilization-for-4-days-straight
+
+5. 
+จากเหตุการณ์ Anonymous โจมตีเว็บไซต์รัฐบาลไทยเนื่องจากแผนการร่าง พรบ Single Gateway (อ้างอิงข้อมูลจาก Website https://www.bangkokpost.com/tech/739884/anonymous-steps-up-single-gateway-protest)
+มี Scenario เป็นดังนี้
+Source of Stimulus: ผู้โจมตีระบบ Anonymous
+Stimulus: การพยายามนำข้อมูลออกจากระบบโดยไม่ได้รับอนุญาต
+Artifacts: ระบบของ CAT Telecom, Data Server
+Environment: ระบบ online ในสถานะปกติ
+Response: ไม่ให้สิทธิ์ผู้ใช้ภายนอกเข้าใช้งาน, จำกัดสิทธิ์ผู้ใช้ในระดับต่าง ๆ , บล็อกผู้ใช้งาน, บันทึก ID ผู้โจมตี
+Response Measure: มีการจดจำ ID ผู้โจมตีหรือไม่, ข้อมูลที่ถูกนำออกไปคิดเป็นปริมาณเท่าใด, สามารถ track ผู้โจมตีได้หรือไม่, สามารถยับยั้งการโจมตีครั้งต่อ ๆ ไปหรือการโจมตีในปัจจุบันได้หรือไม่
+
+6.
+เวลาในการสมัครแต่ละ platform เรียงลำดับดังนี้ (น้อยไปมาก) Coursera < edx < ThaiMOOC
+ความแตกต่างแต่ละ platform คือ
+	- Coursera
+		+ สามารถ Navigate หน้าเว็บได้ง่าย มีการแยกส่วนต่าง ๆ ชัดเจน ไม่รกเกินไป
+		+ หน้าคอร์สเรียนมีการแบ่งสัดส่วนชัดเจนและใช้งานได้ง่าย
+		+ มีการจัด pack รวมคอร์สเรียนเป็น specialization ที่ทำให้ลงทะเบียนเรียนเรื่องที่สัมพันธ์กันได้ง่าย
+		- การลงทะเบียนแบบฟรี (audit) บางคอร์สไม่สามารถกดปุ่มนั้นได้หากใช้สิทธิ์ของสถาบัน ต้องเปลี่ยนไปใช้สิทธิ์ผู้ใช้ปกติจึงสามารถทำได้
+		- การดูคอร์สผู้สอนบางท่าน ไม่สามารถ navigate ไปดูได้ง่าย
+		- การดูคลิปเรียนหลาย ๆ ครั้ง มีปัญหาในช่วงท้ายที่หน้าเว็บจะ refresh ตัวเองและตัดคลิปจบ
+	- edx
+		+ ลงทะเบียนเรียนคอร์สแบบฟรีได้ง่ายกว่า Coursera
+		+ ระบบการจัดการภายในคอร์สเรียน มีลูกเล่นเยอะและใช้งานได้ง่าย
+		- หน้าเว็บใช้เวลาโหลดนาน
+	- ThaiMOOC
+		+ คอร์สเรียนส่วนใหญ่เป็นภาษาไทย
+		+ ระบบคอร์สใช้ของ edx ทำให้ผู้ใช้ edx มาก่อนเปลี่ยนมาใช้งานได้ง่าย
+		- ไม่มี sign up/login ในหน้าแรก ๆ (ต้องกดลงทะเบียนเรียนก่อน)
+		- UI แต่ละหน้าไม่สม่ำเสมอกัน ดูแล้วสับสน
+		- ลูกศรสีขาว บนพื้นหลังสีขาว (สีไม่ contrast)
+		- เวลาในการส่ง Verification Email นาน
+		- การสลับใช้ภาษาไทย/อังกฤษตลอดเวลา ไม่มีความสม่ำเสมอ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

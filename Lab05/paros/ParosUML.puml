@@ -1,0 +1,246 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Paros{
+- cmdLine: CommandLine
+- {static} log: Log
+
++ {static} main(): void
+- init(): void
+- run(): void
+}
+
+class Constant{
++ {static} PROGRAM_NAME: String
++ {static} PROGRAM_VERSION: String
++ {static} VERSION_TAG: long
+
++ {static} getEyeCatcher(): String
++ {static} setEyeCatcher(String eyeCatcher): String
++ {static} getInstance(): Constant
+}
+
+abstract class FileXML{
+# doc: Document
+# docBuilder: DocumentBuilder
+# docBuilderFactory: DocumentBuilderFactory
+
++ getDocument(): Document
++ getElements(String tagName): Elements[]
++ getText(Element element): String
+}
+
+abstract class AbstractParam{
+- config:FileConfiguration
+
++ load(FileConfiguration config): void
++ load(String fileName): void
++ getConfig(): FileConfiguration
+}
+
+class Database{
+- {static} database: Database
+- databaseServer: DatabaseServer
+- listenerList: Vector
+
++ getDatabaseServer(): DatabaseServer
++ open(String path): void
++ {static} getSingleton(): Database
+}
+
+class Control{
+- {static} control: Control
+- menuFileControl: MenuFileControl
+- menuToolsControl: MenuToolsControl
+
+- init(): void
+# addExtension(): void
++ shutdown(boolean compact): void
+}
+
+abstract class AbstractControl{
+# loader: ExtensionLoader
+# model: Model
+# view: View
+
++ getExtensionLoader(): ExtensionLoader
+# {abstract} addExtension(): void
+# {abstract} addCommonExtension(): void
+}
+
+class Proxy{
+- model: Model
+- proxyServer: ProxyServer
+- proxyServerSSL: ProxyServerSSL
+
++ startServer(): void
++ stopServer(): void
++ setSerialize(boolean serialize): void
+}
+
+class MenuFileControl{
+- view: View
+- model: Model
+- control: Control
+
++ exit(): void
++ newSession(boolean isPromptNewSession): void
++ openSession(): void
+}
+
+class MenuToolsControl{
+- view: View
+- model: Model
+- control: Control
+
++ options(): void
+}
+
+interface ViewDelegate{
++ getMainFrame(): MainFrame
++ getSiteTreePanel(): SiteMapPanel
++ getOutputPanel: OutputPanel
+}
+
+class Model{
+- {static} model: Model
+- optionsParam: OptionsParam
+- db: Database
+
++ init():void
++ {static} getSingleton(): Model
++ moveSessionDb(String destFile): void
+}
+class Session{
+- model: Model
+- fileName: String
+- sessionDesc: String
+
++ discard(): void
++ isNewState(): boolean
++ open(Strign fileName): void
+}
+class OptionsParam{
+- proxyParam: ProxyParam
+- connectionParam: ConnectionParam
+- viewParam: OptionsParamView
+
++ getConnectionParam(): ConnectionParam
++ getProxyParam(): ProxyParam
+# parse(): void
+}
+class HttpUtil{
++ {static} encodeURI(String uri): String
++ {static} sleep(int ms): void
++ {static} closeServerSocket(ServerSocket socket): void
+}
+class ProxyServer{
+# proxyParam: ProxyParam
+# proxySocket: ServerSocket
+# connectionParam: ConnectionParam
+
++ startServer(String ip, int port, boolean isDynamicPort): int
++ stopServer(): boolean
++ run(): void
+}
+class ProxyServerSSL{
+- {static} ssl: SSLConnector
+
+# createServerSocket(String ip, int port): ServerSocket
+# createProxyProcess(Socket clientSocket): ProxyThread
+}
+class ProxyParam{
+- {static} PROXY_IP: String
+- proxyIp: String
+- proxyPort: int
+
+# parse(): void
++ getProxyIp(): String
++ getProxyPort(): int
+}
+class ProxyThread{
+# parentServer: ProxyServer
+# proxyParam: ProxyParam
+# proxyThread: ProxyThread
+
++ start(): void
+- beginSSL(): void
++ run(): void
+}
+class View{
+- {static} view: View
+- sessionDialog: SessionDialog
+- optionsDialog: OptionsDialog
+
++ getMainFrame(): MainFrame
++ init(): void
++ {static} getSingleton(): View
+}
+
+'Paros ---* Paros จารย์ว่า จะบอกว่า dependent กับตัวเองก็ไม่ต้องบอกก็ได้
+Paros ...> Constant : <<Use>>
+Paros ...> Model : <<Use>>
+Paros ...> Control : <<Use>>
+Paros ...> View : <<Use>>
+
+'จารย์ว่า กรณีนี้ใช้เพื่อแสดงความเป็น Singleton Pattern (ใช้คู่กับ multiplicity ด้วย)
+Constant ...> "1" Constant : <<Create>>
+
+Database ...> "1" Database : <<Create>>
+
+'จารย์ว่า control ไม่ต้องมี assoc ไป Model+View ก็ได้เพราะ transitive จาก AbstractControl
+Control ---|> AbstractControl
+Control ...> "1" Control: <<Create>>
+Control ---* "1" Proxy
+Control ---* "1" MenuFileControl
+Control ---* "1" MenuToolsControl
+Control ...> Session: <<Create>>
+
+AbstractControl ---o "1" Model
+AbstractControl ---o "1" View
+
+Proxy ---o "1" Model
+Proxy ---* "1" ProxyServer
+Proxy ---* "1" ProxyServerSSL
+
+MenuFileControl ---o "1" Model
+MenuFileControl ---o "1" View
+MenuFileControl ---o "1" Control
+MenuFileControl ...> Session: <<Create>>
+
+MenuToolsControl ---o "1" Model
+MenuToolsControl ---o "1" View
+MenuToolsControl ---o "1" Control
+
+Model ---* Session
+Model ---* OptionsParam
+Model ...> "1" Model: <<Create>>
+Model ...> "1" Constant: <<Use>>
+Model ...> "1" Database: <<Use>>
+
+Session ---|> FileXML
+Session ...> Constant: <<Use>>
+Session ---o "1" Model
+
+OptionsParam ---|> AbstractParam
+OptionsParam ---* "1" ProxyParam
+OptionsParam ...> "1" Constant: <<Use>>
+
+ProxyServer ---* ProxyParam
+ProxyServer ...> HttpUtil: <<Use>>
+ProxyServer ...> ProxyThread: <<Create>>
+
+ProxyServerSSL ---|> ProxyServer
+ProxyServerSSL ...> "1" ProxyThread: <<Create>>
+
+ProxyParam ---|> AbstractParam
+
+ProxyThread ...> HttpUtil: <<Use>>
+ProxyThread ---o "1" ProxyServer
+ProxyThread ...> "1" ProxyParam: <<Use>>
+ProxyThread ...> Model: <<Use>>
+
+View ...|> ViewDelegate: <<Implements>>
+View ...> "1" View: <<Create>>
+View ...> Constant: <<Use>>
+@enduml
