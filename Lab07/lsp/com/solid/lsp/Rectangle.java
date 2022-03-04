@@ -1,7 +1,7 @@
 package com.solid.lsp;
 
 public class Rectangle
-        extends GeometricObject {
+        extends AbstractGeometricObject {
     // DO NOT EDIT THE FILE FROM THIS LINE ONWARD!!
     private int width;
     private int height;

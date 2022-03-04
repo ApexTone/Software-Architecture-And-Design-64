@@ -1,6 +1,6 @@
 package com.solid.lsp;
 
-public class Square extends GeometricObject {
+public class Square extends AbstractGeometricObject {
 
     private int side;
 

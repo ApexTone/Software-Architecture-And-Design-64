@@ -1,5 +1,5 @@
 package com.solid.lsp;
 
-public abstract class GeometricObject {
+public abstract class AbstractGeometricObject {
     public abstract int getArea();
 }
