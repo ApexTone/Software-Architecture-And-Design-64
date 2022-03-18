@@ -3,6 +3,7 @@ package creational;
 import java.util.HashSet;
 import java.util.Set;
 
+//DON'T MODIFY
 public abstract class BookCollection {
     protected Set<Book> books;
 
