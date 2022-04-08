@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Person {
+    - name: String
+    - age: Integer
+    - height: Integer
+    - weight: Integer
+
+    + getName(): String
+    + setName(name: String): void
+    + getAge(): Integer
+    + setAge(age: Integer): void
+    + getHeight(): Integer
+    + setHeight(height: Integer): void
+    + getWeight():Integer
+    + setWeight(weight: Integer): void
+}
+
+class People {
+    - members: List<Person>
+    - sortStrategy: SortStrategy
+
+    + People()
+    + setSortStrategy(sortStrategy: SortStrategy): void
+    + addMember(p: Person): void
+    + print(out: PrintStream): void
+}
+
+interface SortStrategy {
+    + customSort(people: List<Person>): void
+}
+
+class WeightStrategy implements SortStrategy {
+    + customSort(people: List<Person>): void
+}
+
+class NameSortStrategy implements SortStrategy {
+    + customSort(people: List<Person>): void
+}
+
+class HeightSortStrategy implements SortStrategy {
+    + customSort(people: List<Person>): void
+}
+
+class AgeSortStrategy implements SortStrategy {
+    + customSort(people: List<Person>): void
+}
+
+People o---> "0..*" Person
+People o---> SortStrategy
+
+SortStrategy...>Person:<<use>>
+
+@enduml
